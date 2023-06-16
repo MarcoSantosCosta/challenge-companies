@@ -4,17 +4,14 @@ import com.accenture.challengecompanies.domain.models.Company;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.address.AddressMapping;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.supplier.SupplierMapping;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 
 @Entity
 @Table(name = "companies")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")

@@ -15,4 +15,6 @@ public interface CompanyRepositoryInterface {
     List<Company> getAll();
 
     void delete(long id);
+
+    Company update(Company company) throws ElementNotFoundException;
 }

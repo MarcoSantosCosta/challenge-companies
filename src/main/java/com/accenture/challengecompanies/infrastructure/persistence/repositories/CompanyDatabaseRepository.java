@@ -4,6 +4,8 @@ import com.accenture.challengecompanies.domain.exceptions.ElementNotFoundExcepti
 import com.accenture.challengecompanies.domain.models.Company;
 import com.accenture.challengecompanies.domain.repositories.CompanyRepositoryInterface;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.company.CompanyMapping;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,25 +25,42 @@ public class CompanyDatabaseRepository implements CompanyRepositoryInterface {
         return companyDataBaseRepository.save(new CompanyMapping(company)).toModel();
     }
 
+    private CompanyMapping internalGetById(long id) throws ElementNotFoundException {
+        return companyDataBaseRepository.findById(id).orElseThrow(
+                () -> new ElementNotFoundException("Id " + id + " não encontrado"));
+    }
+
     @Override
     public Company getById(long id) throws ElementNotFoundException {
-        var company = companyDataBaseRepository.findById(id).orElseThrow(() -> new ElementNotFoundException("Id " + id + " não encontrado"));
+        var company = this.internalGetById(id);
         return company.toModel();
     }
 
     @Override
     public Company getByCnpj(String cnpj) throws ElementNotFoundException {
-        var company = companyDataBaseRepository.findByCnpj(cnpj).orElseThrow(() -> new ElementNotFoundException("CNPJ: " + cnpj + " não encontrado"));
+        var company = companyDataBaseRepository.findByCnpj(cnpj).orElseThrow(
+                () -> new ElementNotFoundException("CNPJ: " + cnpj + " não encontrado"));
         return company.toModel();
     }
 
     @Override
     public List<Company> getAll() {
-        return companyDataBaseRepository.findAll().stream().map(CompanyMapping::toModel).collect(Collectors.toList());
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        return companyDataBaseRepository.findAll(sort).stream().map(CompanyMapping::toModel).collect(Collectors.toList());
     }
 
     @Override
     public void delete(long id) {
         companyDataBaseRepository.deleteById(id);
     }
+
+    @Override
+    public Company update(Company company) throws ElementNotFoundException {
+        var companyStored = this.internalGetById(company.getId());
+        BeanUtils.copyProperties(company, companyStored, "id", "cnpj");
+
+        companyDataBaseRepository.saveAndFlush(companyStored);
+        return companyStored.toModel();
+    }
+
 }
