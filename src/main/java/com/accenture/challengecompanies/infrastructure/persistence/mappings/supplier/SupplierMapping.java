@@ -1,6 +1,6 @@
 package com.accenture.challengecompanies.infrastructure.persistence.mappings.supplier;
 
-import com.accenture.challengecompanies.common.enums.DocumentType;
+import com.accenture.challengecompanies.domain.enums.DocumentType;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.address.AddressMapping;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.company.CompanyMapping;
 import jakarta.persistence.*;
