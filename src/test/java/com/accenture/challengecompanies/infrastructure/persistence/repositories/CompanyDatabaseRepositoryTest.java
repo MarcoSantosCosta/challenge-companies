@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,7 @@ class CompanyDatabaseRepositoryTest {
         List<CompanyMapping> companyMappings = new ArrayList<>();
         companyMappings.add(new CompanyMapping(this.generateDummyCompany()));
         companyMappings.add(new CompanyMapping(this.generateDummyCompany()));
-        when(companyDataBaseRepository.findAll()).thenReturn(companyMappings);
+        when(companyDataBaseRepository.findAll(Sort.by(Sort.Direction.ASC, "id"))).thenReturn(companyMappings);
 
 
         List<Company> companies = companyDatabaseRepository.getAll();
@@ -127,7 +128,7 @@ class CompanyDatabaseRepositoryTest {
 
         assertNotNull(companies);
         assertEquals(companyMappings.size(), companies.size());
-        verify(companyDataBaseRepository, times(1)).findAll();
+        verify(companyDataBaseRepository, times(1)).findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     @Test
@@ -139,4 +140,42 @@ class CompanyDatabaseRepositoryTest {
 
         verify(companyDataBaseRepository, times(1)).deleteById(companyId);
     }
+
+    @Test
+    public void shouldUpadteCompanyByExistingId() {
+
+        Company updatedCompany = this.generateDummyCompany();
+        updatedCompany.setId(1L);
+        updatedCompany.setTradeName("New Dummy Company");
+
+        CompanyMapping existingCompany = new CompanyMapping(this.generateDummyCompany());
+
+        long companyId = 1;
+        when(companyDataBaseRepository.findById(companyId)).thenReturn(Optional.of(existingCompany));
+
+        Company result = companyDatabaseRepository.update(updatedCompany);
+
+        verify(companyDataBaseRepository, times(1)).saveAndFlush(existingCompany);
+
+        assertEquals(updatedCompany.getCnpj(), existingCompany.getCnpj());
+        assertEquals(updatedCompany.getTradeName(), existingCompany.getTradeName());
+
+        //TODO
+        //Create test to verify address update
+    }
+
+
+    @Test
+    public void shouldThrowsExpectionWhenUpadteNonExistentCompanyId() {
+
+        long companyId = 1;
+        Company updatedCompany = this.generateDummyCompany();
+        updatedCompany.setId(companyId);
+        when(companyDataBaseRepository.findById(companyId)).thenReturn(Optional.empty());
+
+        assertThrows(ElementNotFoundException.class, () -> companyDatabaseRepository.update(updatedCompany));
+        verify(companyDataBaseRepository, times(0)).save(new CompanyMapping(updatedCompany));
+
+    }
+
 }
