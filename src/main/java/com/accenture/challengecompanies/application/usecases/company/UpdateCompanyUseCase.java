@@ -20,7 +20,6 @@ public class UpdateCompanyUseCase {
 
     public Company execute(Company company, long id) throws ElementNotFoundException {
         company.setId(id);
-        System.out.println(company);
         return companyRepository.update(company);
     }
 
