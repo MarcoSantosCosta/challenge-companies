@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.accenture.challengecompanies.presentation.Utils.generateDummyCompany;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -22,29 +23,11 @@ class CompanyDatabaseRepositoryTest {
 
     @Mock
     private CompanyDataBaseRepositoryInterface companyDataBaseRepository;
+
     @InjectMocks
     private CompanyDatabaseRepository companyDatabaseRepository;
 
-    private Address generateDummyAddres() {
 
-        return new Address(
-                "Dummy Street",
-                13,
-                "",
-                "Dummy Neighborhood",
-                "Dummy City",
-                "Dummy State",
-                "99999999",
-                "Dummy Contry");
-    }
-
-
-    private Company generateDummyCompany() {
-        return new Company(
-                "999999999999999",
-                "Dummy Company",
-                this.generateDummyAddres());
-    }
 
     @BeforeEach
     void setUp() {
@@ -69,7 +52,7 @@ class CompanyDatabaseRepositoryTest {
     void shouldReturnCompanyWhenCompanyWhenPassExistingId() throws ElementNotFoundException {
 
         long companyId = 1;
-        CompanyMapping companyMapping = new CompanyMapping(this.generateDummyCompany());
+        CompanyMapping companyMapping = new CompanyMapping(generateDummyCompany());
         when(companyDataBaseRepository.findById(companyId)).thenReturn(Optional.of(companyMapping));
 
         Company retrievedCompany = companyDatabaseRepository.getById(companyId);
@@ -92,7 +75,7 @@ class CompanyDatabaseRepositoryTest {
     void shouldReturnCompanyWhenCompanyWhenPassExistingCNPJ() throws ElementNotFoundException {
 
         String cnpj = "123456789";
-        Company company = this.generateDummyCompany();
+        Company company = generateDummyCompany();
         company.setCnpj(cnpj);
 
         CompanyMapping companyMapping = new CompanyMapping(company);
@@ -118,8 +101,8 @@ class CompanyDatabaseRepositoryTest {
     void shouldReturnAllCompaniesExistents() {
 
         List<CompanyMapping> companyMappings = new ArrayList<>();
-        companyMappings.add(new CompanyMapping(this.generateDummyCompany()));
-        companyMappings.add(new CompanyMapping(this.generateDummyCompany()));
+        companyMappings.add(new CompanyMapping(generateDummyCompany()));
+        companyMappings.add(new CompanyMapping(generateDummyCompany()));
         when(companyDataBaseRepository.findAll(Sort.by(Sort.Direction.ASC, "id"))).thenReturn(companyMappings);
 
 
@@ -144,11 +127,11 @@ class CompanyDatabaseRepositoryTest {
     @Test
     public void shouldUpadteCompanyByExistingId() {
 
-        Company updatedCompany = this.generateDummyCompany();
+        Company updatedCompany = generateDummyCompany();
         updatedCompany.setId(1L);
         updatedCompany.setTradeName("New Dummy Company");
 
-        CompanyMapping existingCompany = new CompanyMapping(this.generateDummyCompany());
+        CompanyMapping existingCompany = new CompanyMapping(generateDummyCompany());
 
         long companyId = 1;
         when(companyDataBaseRepository.findById(companyId)).thenReturn(Optional.of(existingCompany));
@@ -169,7 +152,7 @@ class CompanyDatabaseRepositoryTest {
     public void shouldThrowsExpectionWhenUpadteNonExistentCompanyId() {
 
         long companyId = 1;
-        Company updatedCompany = this.generateDummyCompany();
+        Company updatedCompany = generateDummyCompany();
         updatedCompany.setId(companyId);
         when(companyDataBaseRepository.findById(companyId)).thenReturn(Optional.empty());
 
