@@ -3,6 +3,7 @@ package com.accenture.challengecompanies.domain.models;
 import com.accenture.challengecompanies.domain.enums.DocumentType;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class IndividualSupplier extends Supplier {
 
@@ -41,4 +42,27 @@ public class IndividualSupplier extends Supplier {
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), rg, birthdate);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        IndividualSupplier other = (IndividualSupplier) obj;
+        return Objects.equals(rg, other.rg) &&
+                Objects.equals(birthdate, other.birthdate);
+    }
+
+
 }

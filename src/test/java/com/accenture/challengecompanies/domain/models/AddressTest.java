@@ -24,7 +24,7 @@ public class AddressTest {
         Assertions.assertEquals(neighborhood, address.getNeighborhood());
         Assertions.assertEquals(city, address.getCity());
         Assertions.assertEquals(state, address.getState());
-        Assertions.assertEquals(zipCode, address.getZipCode());
+        Assertions.assertEquals(zipCode.replaceAll("\\D",""), address.getZipCode());
         Assertions.assertEquals(country, address.getCountry());
     }
 }

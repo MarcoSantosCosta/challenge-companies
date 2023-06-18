@@ -2,6 +2,8 @@ package com.accenture.challengecompanies.domain.models;
 
 import com.accenture.challengecompanies.domain.enums.DocumentType;
 
+import java.util.Objects;
+
 public class Supplier {
 
     private long id;
@@ -15,7 +17,7 @@ public class Supplier {
     }
 
     public Supplier(String document, DocumentType documentType, String name, String email, Address address) {
-        this.document = document;
+        this.document = document.replaceAll("\\D", "");
         this.documentType = documentType;
         this.name = name;
         this.email = email;
@@ -24,7 +26,7 @@ public class Supplier {
 
     public Supplier(long id, String document, DocumentType documentType, String name, String email, Address address) {
         this.id = id;
-        this.document = document;
+        this.document = document.replaceAll("\\D", "");
         this.documentType = documentType;
         this.name = name;
         this.email = email;
@@ -53,7 +55,7 @@ public class Supplier {
     }
 
     public void setDocument(String document) {
-        this.document = document;
+        this.document = document.replaceAll("\\D", "");
     }
 
     public DocumentType getDocumentType() {
@@ -78,5 +80,27 @@ public class Supplier {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Supplier other = (Supplier) obj;
+        return id == other.id &&
+                Objects.equals(document, other.document) &&
+                documentType == other.documentType &&
+                Objects.equals(name, other.name) &&
+                Objects.equals(email, other.email) &&
+                Objects.equals(address, other.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, document, documentType, name, email, address);
     }
 }
