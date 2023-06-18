@@ -27,7 +27,6 @@ public class AddSupplierRequest {
     private AddressRequest address;
 
     public AddSupplierRequest(String document, DocumentType documentType, String name, String email, AddressRequest address) {
-        System.out.println("É isso aí amigão");
         this.document = document;
         this.documentType = documentType;
         this.name = name;
@@ -36,13 +35,10 @@ public class AddSupplierRequest {
     }
 
     public void setDocument(String document) {
-        System.out.println("Document" + document);
         this.document = document.toUpperCase();
     }
 
     public void setDocumentType(DocumentType documentType) {
-        System.out.println("This" + this.documentType);
-        System.out.println("This set" + documentType);
         this.documentType = documentType;
     }
 
