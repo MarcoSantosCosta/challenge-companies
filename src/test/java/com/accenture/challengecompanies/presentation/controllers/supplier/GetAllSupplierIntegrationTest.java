@@ -1,5 +1,6 @@
 package com.accenture.challengecompanies.presentation.controllers.supplier;
 
+import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.SupplierRepositoryInterface;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,8 +31,13 @@ class GetAllSupplierIntegrationTest {
     @Test
     public void shouldListAllExistingSuppliers() throws Exception {
         int initialSize = supplierRepository.getAll().size();
-        supplierRepository.create(generateDummySupplier());
-        supplierRepository.create(generateDummySupplier());
+        Supplier supplier1 = generateDummySupplier();
+        Supplier supplier2 = generateDummySupplier();
+        supplier1.setDocument("08935025000199");
+        supplier1.setDocument("92664387000107");
+
+        supplierRepository.create(supplier1);
+        supplierRepository.create(supplier2);
 
         ResultActions result;
         result = mockMvc.perform(MockMvcRequestBuilders.get("/supplier"))
