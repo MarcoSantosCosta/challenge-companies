@@ -80,19 +80,9 @@ class CompanyDatabaseRepositoryTest {
         CompanyMapping companyMapping = new CompanyMapping(company);
         when(companyDataBaseRepository.findByCnpj(cnpj)).thenReturn(Optional.of(companyMapping));
 
-        Company retrievedCompany = companyRepository.getByCnpj(cnpj);
+        Company retrievedCompany = companyRepository.findByCnpj(cnpj);
 
         assertNotNull(retrievedCompany);
-        verify(companyDataBaseRepository, times(1)).findByCnpj(cnpj);
-    }
-
-    @Test
-    void shouldThrowsExceptionWhenPassNonExistingCNPJ() {
-
-        String cnpj = "123456789";
-        when(companyDataBaseRepository.findByCnpj(cnpj)).thenReturn(Optional.empty());
-
-        assertThrows(ElementNotFoundException.class, () -> companyRepository.getByCnpj(cnpj));
         verify(companyDataBaseRepository, times(1)).findByCnpj(cnpj);
     }
 
