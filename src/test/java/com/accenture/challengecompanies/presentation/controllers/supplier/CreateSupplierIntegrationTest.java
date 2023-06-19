@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.accenture.challengecompanies.presentation.Utils.generateDummySupplier;
-import static com.accenture.challengecompanies.presentation.Utils.generateSupplierDummyJson;
+import static com.accenture.challengecompanies.presentation.Utils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -39,7 +38,13 @@ class CreateSupplierIntegrationTest {
 
     @Test
     public void shouldCreateSupplier() throws Exception {
-        String requestBody = generateSupplierDummyJson().toString();
+
+        ObjectNode requestBuilder = generateSupplierDummyJson();
+        ObjectNode addressNode = (ObjectNode) requestBuilder.get("address");
+        addressNode.put("zipCode", "13561060");
+        requestBuilder.set("address",addressNode);
+        String requestBody = requestBuilder.toString();
+
         int initialSize = supplierRepository.getAll().size();
         ResultActions result;
         result = mockMvc.perform(MockMvcRequestBuilders.post("/supplier")
