@@ -15,10 +15,14 @@ public class CreateSupplierUseCase {
 
     private final SupplierRepositoryInterface supplierRepository;
     private final UpdateAddressUseCase updateAddressUseCase;
+    private final AgeValidationUseCase ageValidationUseCase;
 
-    public CreateSupplierUseCase(SupplierRepositoryInterface supplierRepository, UpdateAddressUseCase updateAddressUseCase) {
+    public CreateSupplierUseCase(SupplierRepositoryInterface supplierRepository,
+                                 UpdateAddressUseCase updateAddressUseCase,
+                                 AgeValidationUseCase ageValidationUseCase) {
         this.supplierRepository = supplierRepository;
         this.updateAddressUseCase = updateAddressUseCase;
+        this.ageValidationUseCase = ageValidationUseCase;
     }
 
     public Supplier execute(Supplier supplier) {
@@ -29,6 +33,7 @@ public class CreateSupplierUseCase {
             throw new DuplicateDocumentException(
                     String.format("O, %s %s. já está em uso", supplier.getDocumentType(), supplier.getDocument()));
         }
+        this.ageValidationUseCase.execute(supplier);
         Address addressCreated = updateAddressUseCase.execute(supplier.getAddress());
         supplier.setAddress(addressCreated);
         return supplierRepository.create(supplier);
