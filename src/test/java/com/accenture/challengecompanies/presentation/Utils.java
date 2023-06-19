@@ -32,6 +32,27 @@ public class Utils {
 
         return dummyRequest;
     }
+    public static ObjectNode generateCompanyDummyJson(Company company) {
+        ObjectNode dummyRequest = objectMapper.createObjectNode();
+
+        dummyRequest.put("cnpj", company.getCnpj());
+        dummyRequest.put("tradeName", company.getTradeName());
+
+        ObjectNode addressNode = objectMapper.createObjectNode();
+        addressNode.put("street", company.getAddress().getStreet());
+        addressNode.put("number", company.getAddress().getNumber());
+        addressNode.put("complement", company.getAddress().getComplement());
+        addressNode.put("neighborhood", company.getAddress().getNeighborhood());
+        addressNode.put("city", company.getAddress().getCity());
+        addressNode.put("state", company.getAddress().getState());
+        addressNode.put("zipCode", company.getAddress().getZipCode());
+        addressNode.put("country", company.getAddress().getCountry());
+
+        dummyRequest.set("address", addressNode);
+
+        return dummyRequest;
+    }
+
 
     public static ObjectNode generateSupplierDummyJson() {
         ObjectNode dummyRequest = objectMapper.createObjectNode();
@@ -72,7 +93,7 @@ public class Utils {
 
     public static Supplier generateDummySupplier() {
         return new Supplier(
-                "999999999999999",
+                "76.936.476/0001-09",
                 DocumentType.CNPJ,
                 "Dummy Name",
                 "Dummy Supplier",
@@ -82,7 +103,7 @@ public class Utils {
 
     public static Company generateDummyCompany() {
         return new Company(
-                "999999999999999",
+                "76.936.476/0001-09",
                 "Dummy Company",
                 generateDummyAddres());
     }

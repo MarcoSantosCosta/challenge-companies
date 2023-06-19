@@ -1,13 +1,9 @@
 package com.accenture.challengecompanies.infrastructure.persistence.repositories;
 
-import com.accenture.challengecompanies.domain.enums.DocumentType;
 import com.accenture.challengecompanies.domain.exceptions.ElementNotFoundException;
 import com.accenture.challengecompanies.domain.models.Company;
-import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.CompanyRepositoryInterface;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.company.CompanyMapping;
-import com.accenture.challengecompanies.infrastructure.persistence.mappings.supplier.SupplierMapping;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
@@ -35,7 +31,7 @@ public class CompanyDatabaseRepository implements CompanyRepositoryInterface {
 
     @Override
     public Company getById(long id) throws ElementNotFoundException {
-        var company = this.internalGetById(id);
+        CompanyMapping company = this.internalGetById(id);
         return company.toModel();
     }
 
@@ -61,11 +57,19 @@ public class CompanyDatabaseRepository implements CompanyRepositoryInterface {
 
     @Override
     public Company update(Company company) throws ElementNotFoundException {
-        var companyStored = this.internalGetById(company.getId());
-        BeanUtils.copyProperties(company, companyStored, "id", "cnpj");
+        CompanyMapping companyStored = this.internalGetById(company.getId());
 
-        companyDataBaseRepository.saveAndFlush(companyStored);
-        return companyStored.toModel();
+        companyStored.setTradeName(company.getTradeName());
+        companyStored.getAddress().setStreet(company.getAddress().getStreet());
+        companyStored.getAddress().setCity(company.getAddress().getCity());
+        companyStored.getAddress().setNumber(company.getAddress().getNumber());
+        companyStored.getAddress().setComplement(company.getAddress().getComplement());
+        companyStored.getAddress().setNeighborhood(company.getAddress().getNeighborhood());
+        companyStored.getAddress().setState(company.getAddress().getState());
+        companyStored.getAddress().setZipCode(company.getAddress().getZipCode());
+        companyStored.getAddress().setCountry(company.getAddress().getCountry());
+
+        return companyDataBaseRepository.saveAndFlush(companyStored).toModel();
     }
 
 }
