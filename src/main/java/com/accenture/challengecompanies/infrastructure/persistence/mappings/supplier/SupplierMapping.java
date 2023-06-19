@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "suppliers")
+@Table(name = "suppliers", uniqueConstraints = @UniqueConstraint(columnNames = {"document", "documentType"}))
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

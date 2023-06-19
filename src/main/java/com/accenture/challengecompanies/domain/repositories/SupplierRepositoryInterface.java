@@ -1,5 +1,6 @@
 package com.accenture.challengecompanies.domain.repositories;
 
+import com.accenture.challengecompanies.domain.enums.DocumentType;
 import com.accenture.challengecompanies.domain.exceptions.ElementNotFoundException;
 import com.accenture.challengecompanies.domain.models.Supplier;
 
@@ -10,7 +11,7 @@ public interface SupplierRepositoryInterface {
 
     Supplier getById(long id) throws ElementNotFoundException;
 
-    Supplier getByDocument(String document);
+    Supplier findByDocument(String document, DocumentType documentType);
 
     List<Supplier> getAll();
 

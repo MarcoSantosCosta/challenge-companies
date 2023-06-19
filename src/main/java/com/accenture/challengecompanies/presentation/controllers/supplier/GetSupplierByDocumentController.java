@@ -1,6 +1,7 @@
 package com.accenture.challengecompanies.presentation.controllers.supplier;
 
 import com.accenture.challengecompanies.application.usecases.supplier.GetSupplierByDocumentUseCase;
+import com.accenture.challengecompanies.domain.enums.DocumentType;
 import com.accenture.challengecompanies.domain.exceptions.ElementNotFoundException;
 import com.accenture.challengecompanies.domain.models.Supplier;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,9 @@ public class GetSupplierByDocumentController {
         this.getSupplierByDocumentUseCase = getSupplierByDocumentUseCase;
     }
 
-    @GetMapping("/supplier/cnpj/{cnpj}")
+    @GetMapping("/supplier/{documentType}/{cnpj}")
     @ResponseStatus(HttpStatus.OK)
-    public Supplier getSupplierByDocument(@PathVariable String cnpj) throws ElementNotFoundException {
-        return this.getSupplierByDocumentUseCase.execute(cnpj);
+    public Supplier getSupplierByDocument(@PathVariable DocumentType documentType, @PathVariable String cnpj) throws ElementNotFoundException {
+        return this.getSupplierByDocumentUseCase.execute(cnpj, documentType);
     }
 }

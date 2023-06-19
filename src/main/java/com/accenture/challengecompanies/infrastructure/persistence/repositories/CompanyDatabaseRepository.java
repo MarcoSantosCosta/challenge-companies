@@ -1,9 +1,12 @@
 package com.accenture.challengecompanies.infrastructure.persistence.repositories;
 
+import com.accenture.challengecompanies.domain.enums.DocumentType;
 import com.accenture.challengecompanies.domain.exceptions.ElementNotFoundException;
 import com.accenture.challengecompanies.domain.models.Company;
+import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.CompanyRepositoryInterface;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.company.CompanyMapping;
+import com.accenture.challengecompanies.infrastructure.persistence.mappings.supplier.SupplierMapping;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
@@ -36,12 +39,14 @@ public class CompanyDatabaseRepository implements CompanyRepositoryInterface {
         return company.toModel();
     }
 
+
     @Override
-    public Company getByCnpj(String cnpj) throws ElementNotFoundException {
-        var company = companyDataBaseRepository.findByCnpj(cnpj).orElseThrow(
-                () -> new ElementNotFoundException("CNPJ: " + cnpj + " não encontrado"));
-        return company.toModel();
+    public Company findByCnpj(String cnpj) {
+        return companyDataBaseRepository.findByCnpj(cnpj)
+                .map(CompanyMapping::toModel)
+                .orElse(null);
     }
+
 
     @Override
     public List<Company> getAll() {

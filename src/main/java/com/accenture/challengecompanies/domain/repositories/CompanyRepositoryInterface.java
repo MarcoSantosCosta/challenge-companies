@@ -10,7 +10,7 @@ public interface CompanyRepositoryInterface {
 
     Company getById(long id) throws ElementNotFoundException;
 
-    Company getByCnpj(String CNPJ);
+    Company findByCnpj(String CNPJ);
 
     List<Company> getAll();
 

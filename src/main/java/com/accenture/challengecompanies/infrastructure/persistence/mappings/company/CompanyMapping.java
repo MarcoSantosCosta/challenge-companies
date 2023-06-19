@@ -19,7 +19,10 @@ public class CompanyMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String cnpj;
+
     private String tradeName;
 
     @OneToOne(cascade = CascadeType.ALL)
