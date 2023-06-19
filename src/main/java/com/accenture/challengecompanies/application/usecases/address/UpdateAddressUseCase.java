@@ -24,7 +24,7 @@ public class UpdateAddressUseCase {
         if(addressResponse == null){
             throw  new InvalidCepException(String.format("o CEP %s não é válido", address.getZipCode()));
         }
-        return this.addressRepository.update(address);
+        return this.addressRepository.save(address);
     }
 
 }
