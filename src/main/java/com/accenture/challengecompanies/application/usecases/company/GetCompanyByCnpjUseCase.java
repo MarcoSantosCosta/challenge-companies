@@ -17,7 +17,7 @@ public class GetCompanyByCnpjUseCase {
     }
 
     public Company execute(String cnpj) {
-        return  companyRepository.getByCnpj(cnpj);
+        return  companyRepository.findByCnpj(cnpj);
     }
 
 }

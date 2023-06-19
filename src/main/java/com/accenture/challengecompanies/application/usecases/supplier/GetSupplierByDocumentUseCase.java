@@ -1,5 +1,6 @@
 package com.accenture.challengecompanies.application.usecases.supplier;
 
+import com.accenture.challengecompanies.domain.enums.DocumentType;
 import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.SupplierRepositoryInterface;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,8 @@ public class GetSupplierByDocumentUseCase {
         this.supplierRepository = supplierRepository;
     }
 
-    public Supplier execute(String document) {
-        return supplierRepository.getByDocument(document);
+    public Supplier execute(String document, DocumentType documentType) {
+        return supplierRepository.findByDocument(document, documentType);
     }
 
 }

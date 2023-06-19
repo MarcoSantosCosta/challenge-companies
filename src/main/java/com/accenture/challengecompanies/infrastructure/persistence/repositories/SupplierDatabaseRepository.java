@@ -1,5 +1,6 @@
 package com.accenture.challengecompanies.infrastructure.persistence.repositories;
 
+import com.accenture.challengecompanies.domain.enums.DocumentType;
 import com.accenture.challengecompanies.domain.exceptions.ElementNotFoundException;
 import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.SupplierRepositoryInterface;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -36,8 +38,10 @@ public class SupplierDatabaseRepository implements SupplierRepositoryInterface {
     }
 
     @Override
-    public Supplier getByDocument(String document) {
-        return null;
+    public Supplier findByDocument(String document, DocumentType documentType) {
+        return supplierDataBaseRepository.findByDocumentAndDocumentType(document, documentType)
+                .map(SupplierMapping::toModel)
+                .orElse(null);
     }
 
 

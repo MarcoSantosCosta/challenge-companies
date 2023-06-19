@@ -1,5 +1,6 @@
 package com.accenture.challengecompanies.application.usecases.supplier;
 
+import com.accenture.challengecompanies.domain.exceptions.DuplicateDocumentException;
 import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.SupplierRepositoryInterface;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,14 @@ public class CreateSupplierUseCase {
     }
 
     public Supplier execute(Supplier supplier) {
+
+        if (supplierRepository.findByDocument(
+                supplier.getDocument(),
+                supplier.getDocumentType()) != null){
+            throw new DuplicateDocumentException(
+                    String.format("O, %s %s. já está em uso", supplier.getDocumentType(),supplier.getDocument()));
+        }
+
         return supplierRepository.create(supplier);
     }
 
