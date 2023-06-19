@@ -45,7 +45,7 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public Company updateCompany(
             @RequestBody @Valid UpdateCompanyRequest request,
             @PathVariable long id

@@ -3,6 +3,7 @@ package com.accenture.challengecompanies.application.usecases.address;
 import com.accenture.challengecompanies.domain.exceptions.InvalidCepException;
 import com.accenture.challengecompanies.domain.models.Address;
 import com.accenture.challengecompanies.domain.repositories.AddressRepositoryInterface;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.stereotype.Service;
 
 //This @Service annotation is intentionally breaking the Clean Architecture principles in order to reduce code verbosity.
@@ -23,8 +24,7 @@ public class UpdateAddressUseCase {
         if(addressResponse == null){
             throw  new InvalidCepException(String.format("o CEP %s não é válido", address.getZipCode()));
         }
-
-        return this.addressRepository.save(address);
+        return this.addressRepository.update(address);
     }
 
 }
