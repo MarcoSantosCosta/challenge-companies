@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -33,6 +34,9 @@ public class SupplierMapping {
 
     private String email;
 
+    private String rg;
+    private Date birthdate;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private AddressMapping address;
@@ -40,19 +44,26 @@ public class SupplierMapping {
     @ManyToMany(mappedBy = "suppliers")
     private List<CompanyMapping> companies;
 
+
     public SupplierMapping(Supplier supplier) {
         this.document = supplier.getDocument();
         this.documentType = supplier.getDocumentType();
+        this.name = supplier.getName();
         this.email = supplier.getEmail();
+        this.rg = supplier.getRg();
+        this.birthdate = supplier.getBirthdate();
         this.address = new AddressMapping(supplier.getAddress());
     }
 
     public Supplier toModel() {
-        return new Supplier(this.getId(),
+        return new Supplier(
+                this.getId(),
                 this.getDocument(),
                 this.getDocumentType(),
                 this.getName(),
                 this.getEmail(),
+                this.getRg(),
+                this.getBirthdate(),
                 this.getAddress().toModel()
         );
     }

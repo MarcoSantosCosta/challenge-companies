@@ -48,7 +48,7 @@ public class Utils {
         addressNode.put("neighborhood", "Bairro Exemplo");
         addressNode.put("city", "Cidade Exemplo");
         addressNode.put("state", "Estado Exemplo");
-        addressNode.put("zipCode", "12345-678");
+        addressNode.put("zipCode", "13561060");
         addressNode.put("country", "País Exemplo");
 
         dummyRequest.set("address", addressNode);
@@ -66,7 +66,7 @@ public class Utils {
                 "Dummy Neighborhood",
                 "Dummy City",
                 "Dummy State",
-                "99999999",
+                "13561060",
                 "Dummy Contry");
     }
 

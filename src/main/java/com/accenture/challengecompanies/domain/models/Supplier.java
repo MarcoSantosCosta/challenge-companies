@@ -2,6 +2,7 @@ package com.accenture.challengecompanies.domain.models;
 
 import com.accenture.challengecompanies.domain.enums.DocumentType;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class Supplier {
@@ -12,6 +13,8 @@ public class Supplier {
     private String name;
     private String email;
     private Address address;
+    private String rg;
+    private Date birthdate;
 
     public Supplier() {
     }
@@ -21,15 +24,29 @@ public class Supplier {
         this.documentType = documentType;
         this.name = name;
         this.email = email;
+        this.rg = null;
+        this.birthdate = null;
         this.address = address;
     }
 
-    public Supplier(long id, String document, DocumentType documentType, String name, String email, Address address) {
+    public Supplier(String document, DocumentType documentType, String name, String email, String rg, Date birthdate, Address address) {
+        this.document = document.replaceAll("\\D", "");
+        this.documentType = documentType;
+        this.name = name;
+        this.email = email;
+        this.rg = rg;
+        this.birthdate = birthdate;
+        this.address = address;
+    }
+
+    public Supplier(long id, String document, DocumentType documentType, String name, String email, String rg, Date birthdate, Address address) {
         this.id = id;
         this.document = document.replaceAll("\\D", "");
         this.documentType = documentType;
         this.name = name;
         this.email = email;
+        this.rg = rg;
+        this.birthdate = birthdate;
         this.address = address;
     }
 
@@ -82,6 +99,22 @@ public class Supplier {
         this.address = address;
     }
 
+    public String getRg() {
+        return rg;
+    }
+
+    public void setRg(String rg) {
+        this.rg = rg;
+    }
+
+    public Date getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -96,11 +129,13 @@ public class Supplier {
                 documentType == other.documentType &&
                 Objects.equals(name, other.name) &&
                 Objects.equals(email, other.email) &&
-                Objects.equals(address, other.address);
+                Objects.equals(address, other.address) &&
+                Objects.equals(rg, other.rg) &&
+                Objects.equals(birthdate, other.birthdate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, document, documentType, name, email, address);
+        return Objects.hash(id, document, documentType, name, email, address, rg, birthdate);
     }
 }
