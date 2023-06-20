@@ -1,6 +1,7 @@
 package com.accenture.challengecompanies.infrastructure.persistence.mappings.company;
 
 import com.accenture.challengecompanies.domain.models.Company;
+import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.address.AddressMapping;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.supplier.SupplierMapping;
 import jakarta.persistence.*;
@@ -30,13 +31,16 @@ public class CompanyMapping {
     private AddressMapping address;
 
     @ManyToMany
-    @JoinTable(name = "company_supplier", joinColumns = @JoinColumn(name = "company_id"), inverseJoinColumns = @JoinColumn(name = "supplier_id"))
+    @JoinTable(name = "company_supplier",
+            joinColumns = @JoinColumn(name = "company_id"),
+            inverseJoinColumns = @JoinColumn(name = "supplier_id") )
     private List<SupplierMapping> suppliers;
 
     public CompanyMapping(Company company) {
         this.cnpj = company.getCnpj();
         this.tradeName = company.getTradeName();
         this.address = new AddressMapping(company.getAddress());
+        this.suppliers = company.getSuppliers().stream().map(SupplierMapping::new).toList();
     }
 
     public Company toModel() {

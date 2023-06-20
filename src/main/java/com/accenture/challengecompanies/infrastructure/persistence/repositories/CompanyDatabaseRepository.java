@@ -2,8 +2,10 @@ package com.accenture.challengecompanies.infrastructure.persistence.repositories
 
 import com.accenture.challengecompanies.domain.exceptions.ElementNotFoundException;
 import com.accenture.challengecompanies.domain.models.Company;
+import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.CompanyRepositoryInterface;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.company.CompanyMapping;
+import com.accenture.challengecompanies.infrastructure.persistence.mappings.supplier.SupplierMapping;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 public class CompanyDatabaseRepository implements CompanyRepositoryInterface {
 
     private final CompanyDataBaseRepositoryInterface companyDataBaseRepository;
+
 
     public CompanyDatabaseRepository(CompanyDataBaseRepositoryInterface companyDataBaseRepository) {
         this.companyDataBaseRepository = companyDataBaseRepository;
@@ -31,8 +34,18 @@ public class CompanyDatabaseRepository implements CompanyRepositoryInterface {
 
     @Override
     public Company getById(long id) throws ElementNotFoundException {
-        CompanyMapping company = this.internalGetById(id);
-        return company.toModel();
+        CompanyMapping companyMapping = this.internalGetById(id);
+        Company company = companyMapping.toModel();
+        return company;
+    }
+
+    @Override
+    public List<Supplier> getSuppliers(long id) {
+        CompanyMapping companyMapping = this.internalGetById(id);
+        List<SupplierMapping> supplierMappings = companyMapping.getSuppliers();
+        return supplierMappings.stream()
+                .map(SupplierMapping::toModel)
+                .collect(Collectors.toList());
     }
 
 
