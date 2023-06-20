@@ -189,12 +189,23 @@ class CompanyIntegrationTest {
     @Test
     public void shouldReturnSuppliers() throws Exception {
         Company company = companyRepository.create(generateDummyCompany());
-        Supplier supplier1 = supplierRepository.create(generateDummySupplier());
+
+        Supplier supplier1 =generateDummySupplier();
         supplier1.setDocument("07.994.131/0001-80");
-        Supplier supplier2 = supplierRepository.create(generateDummySupplier());
+
+        Supplier supplier2 = generateDummySupplier();
         supplier2.setDocument("98.154.401/0001-09");
-        crossRepository.addSupplier(company.getId(), supplier1.getId());
-        crossRepository.addSupplier(company.getId(), supplier2.getId());
+
+        supplier1.setId(supplierRepository.create((supplier1)).getId());
+
+        supplier2.setId(supplierRepository.create((supplier2)).getId());
+
+
+        Thread.sleep(10 );
+
+        crossRepository.addSupplier(company.getId(),supplier1.getId());
+        crossRepository.addSupplier(company.getId(),supplier2.getId());
+
         assertEquals(2,companyRepository.getSuppliers(company.getId()).size());
 
 
