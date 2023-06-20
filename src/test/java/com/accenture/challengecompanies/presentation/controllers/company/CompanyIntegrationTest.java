@@ -1,11 +1,14 @@
 package com.accenture.challengecompanies.presentation.controllers.company;
 
 import com.accenture.challengecompanies.domain.models.Company;
+import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.CompanyRepositoryInterface;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.accenture.challengecompanies.domain.repositories.CrossRepositoryInterface;
+import com.accenture.challengecompanies.domain.repositories.SupplierRepositoryInterface;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,8 +21,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.accenture.challengecompanies.presentation.Utils.generateCompanyDummyJson;
-import static com.accenture.challengecompanies.presentation.Utils.generateDummyCompany;
+import static com.accenture.challengecompanies.presentation.Utils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -36,6 +38,12 @@ class CompanyIntegrationTest {
 
     @Autowired
     private CompanyRepositoryInterface companyRepository;
+
+    @Autowired
+    private SupplierRepositoryInterface supplierRepository;
+
+    @Autowired
+    private CrossRepositoryInterface crossRepository;
 
     @Test
     public void shouldCreateCompany() throws Exception {
@@ -69,7 +77,7 @@ class CompanyIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").exists());
         assertEquals(initialSize, companyRepository.getAll().size());
     }
 
@@ -88,7 +96,7 @@ class CompanyIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Duplicate document"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").value("Duplicate document"));
 
         assertEquals(1, companyRepository.getAll().size());
     }
@@ -150,7 +158,7 @@ class CompanyIntegrationTest {
         String requestBody = generateCompanyDummyJson(existentCompany).toString();
 
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.put(
-                String.format("/company/%s", existentCompany.getId()))
+                                String.format("/company/%s", existentCompany.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -177,4 +185,38 @@ class CompanyIntegrationTest {
         });
         assertEquals(1, companyRepository.getAll().size());
     }
+
+    @Test
+    public void shouldReturnSuppliers() throws Exception {
+        Company company = companyRepository.create(generateDummyCompany());
+
+        Supplier supplier1 =generateDummySupplier();
+        supplier1.setDocument("07.994.131/0001-80");
+
+        Supplier supplier2 = generateDummySupplier();
+        supplier2.setDocument("98.154.401/0001-09");
+
+        supplier1.setId(supplierRepository.create((supplier1)).getId());
+
+        supplier2.setId(supplierRepository.create((supplier2)).getId());
+
+
+        Thread.sleep(10 );
+
+        crossRepository.addSupplier(company.getId(),supplier1.getId());
+        crossRepository.addSupplier(company.getId(),supplier2.getId());
+
+        assertEquals(2,companyRepository.getSuppliers(company.getId()).size());
+
+
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get(
+                                String.format("/company/%s/suppliers", company.getId()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.equalTo(supplier1.getId())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id", Matchers.equalTo(supplier2.getId())));
+
+    }
+
 }

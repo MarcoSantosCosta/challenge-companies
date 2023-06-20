@@ -1,7 +1,9 @@
 package com.accenture.challengecompanies.presentation.controllers.supplier;
 
 import com.accenture.challengecompanies.domain.enums.DocumentType;
+import com.accenture.challengecompanies.domain.models.Company;
 import com.accenture.challengecompanies.domain.models.Supplier;
+import com.accenture.challengecompanies.domain.repositories.CompanyRepositoryInterface;
 import com.accenture.challengecompanies.domain.repositories.SupplierRepositoryInterface;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,24 +20,70 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.accenture.challengecompanies.presentation.Utils.generateDummySupplier;
-import static com.accenture.challengecompanies.presentation.Utils.generateSupplierDummyJson;
+import static com.accenture.challengecompanies.presentation.Utils.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureTestDatabase
-//Integrations tests
-class CreateSupplierIntegrationTest {
-
+// Integrations tests
+class SupplierIntegrationTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private SupplierRepositoryInterface supplierRepository;
+
+    @Autowired
+    private CompanyRepositoryInterface companyRepository;
+
+    @Test
+    public void shouldGetExistingSupplierById() throws Exception {
+        Supplier existentSupplier = supplierRepository.create(generateDummySupplier());
+
+        ResultActions result;
+        result = mockMvc.perform(MockMvcRequestBuilders.get("/supplier/" + existentSupplier.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        String responseJson = result.andReturn().getResponse().getContentAsString();
+        String supplierJson = objectMapper.writeValueAsString(existentSupplier);
+        assertEquals(responseJson, supplierJson);
+    }
+
+    @Test
+    public void shouldListAllExistingSuppliers() throws Exception {
+        int initialSize = supplierRepository.getAll().size();
+        Supplier supplier1 = generateDummySupplier();
+        Supplier supplier2 = generateDummySupplier();
+        supplier1.setDocument("08935025000199");
+        supplier1.setDocument("92664387000107");
+
+        supplierRepository.create(supplier1);
+        supplierRepository.create(supplier2);
+
+        ResultActions result;
+        result = mockMvc.perform(MockMvcRequestBuilders.get("/supplier"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        String jsonString = result.andReturn().getResponse().getContentAsString();
+        JsonNode json = objectMapper.readTree(jsonString);
+        assertEquals(initialSize + 2, json.size());
+    }
+
+    @Test
+    public void shouldDeleteExistingSupplier() throws Exception {
+        Supplier supplierExistent = supplierRepository.create(generateDummySupplier());
+        int initialSize = supplierRepository.getAll().size();
+        ResultActions result;
+        result = mockMvc.perform(MockMvcRequestBuilders.delete("/supplier/" + supplierExistent.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        assertEquals(initialSize - 1, supplierRepository.getAll().size());
+    }
 
     @Test
     public void shouldCreateSupplier() throws Exception {
@@ -72,7 +120,7 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").exists());
         assertEquals(initialSize, supplierRepository.getAll().size());
 
     }
@@ -94,7 +142,7 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Duplicate document"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").value("Duplicate document"));
 
         assertEquals(initialSize, supplierRepository.getAll().size());
 
@@ -142,8 +190,8 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Invalid field(s)"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errorsMessages[0].field").value("rg"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").value("Invalid field(s)"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorMessages[0].field").value("rg"));
         ;
 
         assertEquals(initialSize, supplierRepository.getAll().size());
@@ -161,8 +209,8 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Invalid field(s)"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errorsMessages[0].field").value("birthDate"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").value("Invalid field(s)"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorMessages[0].field").value("birthDate"));
         ;
 
         assertEquals(initialSize, supplierRepository.getAll().size());
@@ -188,7 +236,7 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("state age restriction"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").value("state age restriction"));
 
 
         assertEquals(initialSize, supplierRepository.getAll().size());
