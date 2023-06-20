@@ -53,6 +53,7 @@ public class SupplierMapping {
         this.rg = supplier.getRg();
         this.birthdate = supplier.getBirthdate();
         this.address = new AddressMapping(supplier.getAddress());
+
     }
 
     public Supplier toModel() {

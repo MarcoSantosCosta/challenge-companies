@@ -13,17 +13,16 @@ public class UpdateAddressUseCase {
     private final AddressRepositoryInterface addressRepository;
     private final ValidateCepUseCase validateCepUseCase;
 
-    public UpdateAddressUseCase(AddressRepositoryInterface addressRepository, ValidateCepUseCase validateCepUseCase){
+    public UpdateAddressUseCase(AddressRepositoryInterface addressRepository, ValidateCepUseCase validateCepUseCase) {
         this.addressRepository = addressRepository;
-        this.validateCepUseCase =validateCepUseCase;
+        this.validateCepUseCase = validateCepUseCase;
     }
 
     public Address execute(Address address) {
         Address addressResponse = validateCepUseCase.execute(address.getZipCode());
-        if(addressResponse == null){
-            throw  new InvalidCepException(String.format("o CEP %s não é válido", address.getZipCode()));
+        if (addressResponse == null) {
+            throw new InvalidCepException(String.format("o CEP %s não é válido", address.getZipCode()));
         }
-
         return this.addressRepository.save(address);
     }
 

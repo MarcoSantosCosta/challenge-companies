@@ -17,19 +17,13 @@ public class InputDataValidationExceptionHandler {
     private static final String ERROR_MESSAGE = "Invalid field(s)";
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public InvalidFieldsErrorsResponse handleValidationException(MethodArgumentNotValidException ex) {
-        List<InvalidFieldMessageError> errors = new ArrayList<>();
+    public ErrorResponse handleValidationException(MethodArgumentNotValidException ex) {
+        List<ErrorMessage> errors = new ArrayList<>();
 
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errors.add(new InvalidFieldMessageError(error.getField(), error.getDefaultMessage()));
+            errors.add(new ErrorMessage(error.getField(), error.getDefaultMessage()));
         }
 
-        return new InvalidFieldsErrorsResponse(ERROR_MESSAGE, errors);
-    }
-
-    public record InvalidFieldsErrorsResponse(String error, List<InvalidFieldMessageError> errorsMessages) {
-    }
-
-    public record InvalidFieldMessageError(String field, String message) {
+        return new ErrorResponse(ERROR_MESSAGE, errors);
     }
 }

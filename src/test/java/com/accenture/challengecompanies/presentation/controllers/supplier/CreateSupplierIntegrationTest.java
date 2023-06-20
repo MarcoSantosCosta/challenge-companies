@@ -72,7 +72,7 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").exists());
         assertEquals(initialSize, supplierRepository.getAll().size());
 
     }
@@ -94,7 +94,7 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Duplicate document"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").value("Duplicate document"));
 
         assertEquals(initialSize, supplierRepository.getAll().size());
 
@@ -142,8 +142,8 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Invalid field(s)"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errorsMessages[0].field").value("rg"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").value("Invalid field(s)"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorMessages[0].field").value("rg"));
         ;
 
         assertEquals(initialSize, supplierRepository.getAll().size());
@@ -161,8 +161,8 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("Invalid field(s)"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errorsMessages[0].field").value("birthDate"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").value("Invalid field(s)"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorMessages[0].field").value("birthDate"));
         ;
 
         assertEquals(initialSize, supplierRepository.getAll().size());
@@ -188,7 +188,7 @@ class CreateSupplierIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error").value("state age restriction"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorType").value("state age restriction"));
 
 
         assertEquals(initialSize, supplierRepository.getAll().size());

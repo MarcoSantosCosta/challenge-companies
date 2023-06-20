@@ -34,6 +34,7 @@ public class AddressMapping {
     private CompanyMapping company;
 
     public AddressMapping(Address address) {
+        this.id = address.getId();
         this.street = address.getStreet();
         this.number = address.getNumber();
         this.complement = address.getComplement();
