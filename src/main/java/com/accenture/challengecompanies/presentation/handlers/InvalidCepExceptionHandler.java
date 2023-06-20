@@ -7,17 +7,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestControllerAdvice
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class InvalidCepExceptionHandler {
 
-    private static final String ERROR_MESSAGE = "Invalid cep";
+    private static final String ERROR_MESSAGE = "Invalid CEP";
 
     @ExceptionHandler(InvalidCepException.class)
-    public InvalidCepMessageError handlenException(InvalidCepException exception) {
-        return new InvalidCepMessageError(ERROR_MESSAGE, exception.getMessage());
+    public ErrorResponse handlenException(InvalidCepException exception) {
+        List<ErrorMessage> errors = new ArrayList<>();
+        errors.add(new ErrorMessage("cep",exception.getMessage()));
+        return new ErrorResponse(ERROR_MESSAGE, errors);
     }
 
-    public record InvalidCepMessageError(String error, String message) {
-    }
+
+
 }

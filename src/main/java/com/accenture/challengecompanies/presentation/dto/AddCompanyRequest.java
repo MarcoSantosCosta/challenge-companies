@@ -1,3 +1,4 @@
+
 package com.accenture.challengecompanies.presentation.dto;
 
 import com.accenture.challengecompanies.domain.models.Company;
@@ -16,8 +17,7 @@ import org.hibernate.validator.constraints.br.CNPJ;
 public class AddCompanyRequest {
 
     @NotNull(message = "O CNPJ é obrigatório")
-    @NotBlank(message = "O CNPJ não pode estar em branco")
-    @CNPJ
+    @CNPJ(message = "CNPJ inválido")
     private String cnpj;
 
     @NotBlank(message = "O Nome não pode estar em branco")

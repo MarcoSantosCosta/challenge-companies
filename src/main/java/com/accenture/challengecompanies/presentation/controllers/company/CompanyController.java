@@ -3,7 +3,9 @@ package com.accenture.challengecompanies.presentation.controllers.company;
 import com.accenture.challengecompanies.application.usecases.company.*;
 import com.accenture.challengecompanies.domain.exceptions.ElementNotFoundException;
 import com.accenture.challengecompanies.domain.models.Company;
+import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.presentation.dto.AddCompanyRequest;
+import com.accenture.challengecompanies.presentation.dto.AddSupplierToCompany;
 import com.accenture.challengecompanies.presentation.dto.UpdateCompanyRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ public class CompanyController {
     private final GetCompanyByCnpjUseCase getCompanyByCnpjUseCase;
     private final GetAllCompaniesUseCase getAllCompaniesUseCase;
     private final DeleteCompanyUseCase deleteCompanyUseCase;
+    private final AddSupplierUseCase addSupplierUseCase;
+    private final GetSuppliersUseCase getSuppliersUseCase;
 
     public CompanyController(
             CreateCompanyUseCase createCompanyUseCase,
@@ -28,14 +32,16 @@ public class CompanyController {
             GetCompanyByIdUseCase getCompanyByIdUseCase,
             GetCompanyByCnpjUseCase getCompanyByCnpjUseCase,
             GetAllCompaniesUseCase getAllCompaniesUseCase,
-            DeleteCompanyUseCase deleteCompanyUseCase
-    ) {
+            DeleteCompanyUseCase deleteCompanyUseCase,
+            AddSupplierUseCase addSupplierUseCase, GetSuppliersUseCase getSuppliersUseCase) {
         this.createCompanyUseCase = createCompanyUseCase;
         this.updateCompanyUseCase = updateCompanyUseCase;
         this.getCompanyByIdUseCase = getCompanyByIdUseCase;
         this.getCompanyByCnpjUseCase = getCompanyByCnpjUseCase;
         this.getAllCompaniesUseCase = getAllCompaniesUseCase;
         this.deleteCompanyUseCase = deleteCompanyUseCase;
+        this.addSupplierUseCase = addSupplierUseCase;
+        this.getSuppliersUseCase = getSuppliersUseCase;
     }
 
     @PostMapping
@@ -65,6 +71,12 @@ public class CompanyController {
         return getCompanyByCnpjUseCase.execute(cnpj);
     }
 
+    @GetMapping("/{id}/suppliers")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Supplier> getSuppliers(@PathVariable long id){
+        return getSuppliersUseCase.execute(id);
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Company> getAllCompanies() {
@@ -75,5 +87,11 @@ public class CompanyController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteCompany(@PathVariable Long id) {
         deleteCompanyUseCase.execute(id);
+    }
+
+    @PostMapping("/{companyId}/supplier")
+    @ResponseStatus(HttpStatus.OK)
+    public void addSupplier(@PathVariable Long companyId, @RequestBody AddSupplierToCompany request) {
+        addSupplierUseCase.execute(companyId, request.getSupplierId());
     }
 }
