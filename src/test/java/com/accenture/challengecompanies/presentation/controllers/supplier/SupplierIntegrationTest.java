@@ -221,8 +221,6 @@ class SupplierIntegrationTest {
     public void sholdThrowsExepctAgeRestrictionParana() throws Exception {
         ObjectNode requestBuilder = generateSupplierDummyJson();
         requestBuilder.put("documentType", DocumentType.CPF.toString());
-        requestBuilder.put("rg", "114666090");
-        requestBuilder.put("birthDate", "1997-03-04");
         ObjectNode addressNode = (ObjectNode) requestBuilder.get("address");
         addressNode.put("state", "PR");
         requestBuilder.put("birthDate", "2010-03-04");

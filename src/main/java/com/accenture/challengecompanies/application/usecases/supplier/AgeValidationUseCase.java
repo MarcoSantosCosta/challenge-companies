@@ -15,7 +15,7 @@ public class AgeValidationUseCase {
     private final List<String> restrictedStates = Arrays.asList("PR", "PARANA", "PARANÁ");
 
     public boolean execute(Supplier supplier) {
-        if (restrictedStates.contains(supplier.getAddress().getState()) &&
+        if (restrictedStates.contains(supplier.getAddress().getState().toUpperCase()) &&
                 ageCalculator(supplier.getBirthdate()) < 18) {
             throw new AgeRestrictionException();
         }
