@@ -5,6 +5,8 @@ import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.CrossRepositoryInterface;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.company.CompanyMapping;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.supplier.SupplierMapping;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,6 +25,7 @@ public class CrossDatabaseRepository implements CrossRepositoryInterface {
     }
 
     @Override
+    @Transactional
     public List<Supplier> addSupplier(long idCompany, long idSupplier) {
         Optional<CompanyMapping> optionalCompany = companyDataBaseRepository.findById(idCompany);
         Optional<SupplierMapping> optionalSupplier = supplierDatabaseRepository.findById(idSupplier);
@@ -38,7 +41,7 @@ public class CrossDatabaseRepository implements CrossRepositoryInterface {
 
             company.getSuppliers().add(supplier);
             companyDataBaseRepository.save(company);
-
+            Hibernate.initialize(company.getSuppliers());
             return company.getSuppliers()
                     .stream()
                     .map(SupplierMapping::toModel)

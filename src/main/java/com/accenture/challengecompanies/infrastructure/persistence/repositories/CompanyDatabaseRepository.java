@@ -6,6 +6,8 @@ import com.accenture.challengecompanies.domain.models.Supplier;
 import com.accenture.challengecompanies.domain.repositories.CompanyRepositoryInterface;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.company.CompanyMapping;
 import com.accenture.challengecompanies.infrastructure.persistence.mappings.supplier.SupplierMapping;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
@@ -28,8 +30,10 @@ public class CompanyDatabaseRepository implements CompanyRepositoryInterface {
     }
 
     private CompanyMapping internalGetById(long id) throws ElementNotFoundException {
-        return companyDataBaseRepository.findById(id).orElseThrow(
+        CompanyMapping companyMapping =  companyDataBaseRepository.findById(id).orElseThrow(
                 () -> new ElementNotFoundException("Id " + id + " não encontrado"));
+
+        return companyMapping;
     }
 
     @Override
@@ -40,6 +44,7 @@ public class CompanyDatabaseRepository implements CompanyRepositoryInterface {
     }
 
     @Override
+    @Transactional
     public List<Supplier> getSuppliers(long id) {
         CompanyMapping companyMapping = this.internalGetById(id);
         List<SupplierMapping> supplierMappings = companyMapping.getSuppliers();

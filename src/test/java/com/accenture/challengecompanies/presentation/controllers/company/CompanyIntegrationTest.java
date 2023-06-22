@@ -190,7 +190,7 @@ class CompanyIntegrationTest {
     public void shouldReturnSuppliers() throws Exception {
         Company company = companyRepository.create(generateDummyCompany());
 
-        Supplier supplier1 =generateDummySupplier();
+        Supplier supplier1 = generateDummySupplier();
         supplier1.setDocument("07.994.131/0001-80");
 
         Supplier supplier2 = generateDummySupplier();
@@ -200,13 +200,10 @@ class CompanyIntegrationTest {
 
         supplier2.setId(supplierRepository.create((supplier2)).getId());
 
+        crossRepository.addSupplier(company.getId(), supplier1.getId());
+        crossRepository.addSupplier(company.getId(), supplier2.getId());
 
-        Thread.sleep(10 );
-
-        crossRepository.addSupplier(company.getId(),supplier1.getId());
-        crossRepository.addSupplier(company.getId(),supplier2.getId());
-
-        assertEquals(2,companyRepository.getSuppliers(company.getId()).size());
+        assertEquals(2, companyRepository.getSuppliers(company.getId()).size());
 
 
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get(
@@ -214,8 +211,8 @@ class CompanyIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.equalTo(supplier1.getId())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id", Matchers.equalTo(supplier2.getId())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.equalTo((int) supplier1.getId())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id", Matchers.equalTo((int) supplier2.getId())));
 
     }
 
